@@ -70,18 +70,22 @@ function setup() {
 function draw() {
     background("#f0efdf");
 
-    for (let contour of connectedContourLines) {
+    for (let i = 0; i < connectedContourLines.length; i++) {
+        let contour = connectedContourLines[i];
         strokeWeight(
             map(contour.contourValue, contourMaxValue, contourMinValue, 0.1, 1)
         );
+        let strokeOpacity = i * 10 > frameCount ? 1 : 0;
+        // if(i * 10 > frameCount)
+        stroke(100, 100, 100, strokeOpacity * 255);
         noFill();
         for (let l of contour.lines) {
             for (let i = 0; i < l.length - 1; i++) {
-                if (i < frameCount) {
-                    stroke("#f0efdf");
-                } else {
-                    stroke(100, 100, 100);
-                }
+                // if (i < frameCount) {
+                //     stroke("#f0efdf");
+                // } else {
+                //     stroke(100, 100, 100);
+                // }
                 line(l[i][0], l[i][1], l[i + 1][0], l[i + 1][1]);
             }
         }

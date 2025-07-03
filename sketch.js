@@ -6,6 +6,7 @@ let contourSegments = [];
 let contourLinesByValue = {};
 let connectedContourLines = [];
 let points = [];
+let allLines = [];
 let fontSize = 64;
 
 function preload() {
@@ -13,6 +14,8 @@ function preload() {
 }
 
 function setup() {
+    // frameRate(30);
+    // textSize(fontSize);
     createCanvas(windowWidth, windowHeight);
 
     pixelsInWidth = width / res;
@@ -51,15 +54,16 @@ function setup() {
     contourMinValue = min(contourValues);
     contourMaxValue = max(contourValues);
 
-    textSize(fontSize);
-    console.log(textWidth("THE EROSION"));
-
-    console.log("Connected Contour Lines:", connectedContourLines);
+    allLines = connectedContourLines.flatMap((obj) => obj.lines);
+    allLines = allLines.filter((line) => line.length > 2);
+    allLines.sort((a, b) => {
+        return a.length - b.length;
+    });
 
     points = font.textToPoints(
         "THE EROSION",
         width / 2 - textWidth("THE EROSION") / 2,
-        height / 2 + fontSize / 2,
+        height / 2 - fontSize / 2,
         fontSize,
         {
             sampleFactor: 0.9,
@@ -70,36 +74,57 @@ function setup() {
 function draw() {
     background("#f0efdf");
 
-    for (let i = 0; i < connectedContourLines.length; i++) {
-        let contour = connectedContourLines[i];
-        strokeWeight(
-            map(contour.contourValue, contourMaxValue, contourMinValue, 0.1, 1)
-        );
-        let strokeOpacity = i * 10 > frameCount ? 1 : 0;
-        // if(i * 10 > frameCount)
+    for (let i = 0; i < allLines.length; i++) {
+        // let contour = connectedContourLines[i];
+
+        // strokeWeight(
+        //     map(contour.contourValue, contourMaxValue, contourMinValue, 0.1, 1)
+        // );
+        let strokeOpacity =
+            i > frameCount ? 1 : map(frameCount, i, i * 1.5, 1, 0);
+
         stroke(100, 100, 100, strokeOpacity * 255);
         noFill();
-        for (let l of contour.lines) {
-            for (let i = 0; i < l.length - 1; i++) {
-                // if (i < frameCount) {
-                //     stroke("#f0efdf");
-                // } else {
-                //     stroke(100, 100, 100);
-                // }
-                line(l[i][0], l[i][1], l[i + 1][0], l[i + 1][1]);
-            }
+
+        for (let j = 0; j < allLines[i].length - 1; j++) {
+            // if (j < frameCount) {
+            //     stroke("#f0efdf");
+            // } else {
+            //     stroke(100, 100, 100);
+            // }
+            line(
+                allLines[i][j][0],
+                allLines[i][j][1],
+                allLines[i][j + 1][0],
+                allLines[i][j + 1][1]
+            );
         }
     }
-    // noLoop();
 
-    // if (frameCount > 120) {
-    //     console.log("Drawing points");
-    //     // stroke(0);
-    //     // strokeWeight(1);
-    //     fill(0);
+    // if (frameCount > 60) {
+    // console.log("Drawing points");
+    // stroke(0);
+    // strokeWeight(1);
+    //
 
-    //     for (let p of points) {
+    // if (allLines.length / 2 < frameCount) {
+    //     for (let i = 0; i < points.length; i++) {
+    //         let p = points[i];
+    //         // if (i % frameCount == 0) {
+    //         // let pointOpacity = map(frameCount, 120, 200, 0, 1);
+    //         // fill(0, 0, 0, (frameCount / i) * 255);
     //         circle(p.x, p.y, 2);
+    //         // }
     //     }
+    // }
+
+    // for (let i = 0; i < points.length; i++) {
+    //     let p = points[i];
+    //     // if (i % frameCount == 0) {
+    //     // let pointOpacity = map(frameCount, 120, 200, 0, 1);
+    //     fill(0, 0, 0, (frameCount / i) * 255);
+    //     circle(p.x, p.y, 2);
+    //     // }
+    // }
     // }
 }

@@ -78,21 +78,16 @@ function draw() {
     background("#f0efdf");
 
     for (let i = 0; i < allLines.length; i++) {
-        // let contour = connectedContourLines[i];
         let currentLine = allLines[i];
 
-        // strokeWeight(
-        //     map(contour.contourValue, contourMaxValue, contourMinValue, 0.1, 1)
-        // );
-        // let strokeOpacity =
-        //     i > frameCount ? 1 : map(frameCount, i, i * 1.25, 1, 0.5);
+        // gradually fades out
+        let strokeOpacity =
+            i > frameCount ? 1 : map(frameCount, i, i * 1.25, 1, 0.5);
 
-        // i != round(allLines.length * 0.99)
-        //     ? stroke(100, 100, 100, 1 * 255)
-        //     : stroke(255, 0, 0, 255);
+        // strokeOpacity = 1; // add this line to remove the fade out effect
 
         noFill();
-        stroke(100, 100, 100, 255);
+        stroke(100, 100, 100, strokeOpacity * 255);
         for (let j = 0; j < currentLine.length - 1; j++) {
             // for ulta etch a sketch effect
             // if (j < frameCount) {
@@ -109,6 +104,7 @@ function draw() {
         }
     }
 
+    // fills in certain contour lines to appear as "water bodies" on the map
     for (
         let i = round(closedLines.length * 0.95);
         i < closedLines.length;
@@ -135,12 +131,6 @@ function draw() {
     //     }
     // }
     // text(noiseMap[round(width / 4)][round(height / 2)], width / 4, height / 2);
-
-    // if (frameCount > 60) {
-    // console.log("Drawing points");
-    // stroke(0);
-    // strokeWeight(1);
-    //
 
     // if (allLines.length / 2 < frameCount) {
     //     for (let i = 0; i < points.length; i++) {
